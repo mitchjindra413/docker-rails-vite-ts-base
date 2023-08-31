@@ -1,0 +1,25 @@
+# Use the official Node.js image as the base image
+FROM node:14
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy package.json and package-lock.json into the container
+COPY frontend/package*.json ./
+
+# Install frontend dependencies
+RUN npm install
+
+# Copy the rest of the frontend code into the container
+COPY frontend/ ./
+
+# Build the React app production
+# RUN npm run build
+
+# Expose the port the React app runs on
+EXPOSE 3000
+
+# Start a simple server to serve the built React app
+# Start the Vite development server
+CMD ["npm", "run", "dev"]
+

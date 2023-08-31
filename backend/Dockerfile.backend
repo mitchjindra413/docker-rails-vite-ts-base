@@ -1,0 +1,26 @@
+# Use the official Ruby image as the base image
+FROM ruby:3.1.2
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y nodejs && \
+    gem install bundler
+
+# Copy the Gemfile and Gemfile.lock into the container
+COPY backend/Gemfile backend/Gemfile.lock ./
+
+# Install Ruby dependencies
+RUN bundle install
+
+# Copy the rest of the backend code into the container
+COPY backend/ ./
+
+# Expose the port the Rails app runs on
+EXPOSE 5001
+
+# Start the Rails server
+CMD ["rails", "server", "-b", "0.0.0.0", "-p", "5001"]
+

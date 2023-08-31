@@ -1,0 +1,42 @@
+version: "3.9"
+services:
+  database:
+    container_name: trvl_db
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres_user
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_DB: myapp_development
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+  backend:
+    container_name: trvl_backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.backend
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./backend:/app
+    environment:
+      DATABASE_URL: "postgresql://postgres_user:postgres_password@database:5432/myapp_development"
+    depends_on:
+      - database
+
+  frontend:
+    container_name: trvl_frontend
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - backend
+
+volumes:
+  pg-data:
